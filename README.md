@@ -1,1 +1,1 @@
-# task-manager
+npx prisma migrate dev --name ini

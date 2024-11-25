@@ -1,0 +1,32 @@
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type AppConfig = {}
+
+export class OpenAIConfig implements AppConfig {
+    readonly url!: string
+    readonly token!: string
+    readonly model!: string
+}
+
+export interface Config {
+    openAIConfig: OpenAIConfig
+}
+
+const appConfig: Config = {
+    openAIConfig: {
+        url: 'https://api.groq.com/openai/v1/chat/completions',
+        token: "TOKEN",
+        model: 'llama3-8b-8192'
+    },
+}
+
+export const getConfig = <T extends AppConfig>(config: { new(): T }): T => {
+    const configInstance: T = new config()
+    const configKey = Object.keys(appConfig).find(
+        key => key.toLowerCase() === config.name.toLowerCase()
+    ) as keyof Config
+    for (const key of Object.keys(appConfig[configKey])) { 
+        configInstance[key as keyof T] = (appConfig as any)[configKey][key]
+    }
+    return configInstance
+}

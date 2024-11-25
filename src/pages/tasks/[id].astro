@@ -1,0 +1,36 @@
+---
+
+import TaskEdit from '../../components/TaskEdit.svelte'
+import Layout from '../../layouts/Layout.astro'
+import { taskSchema } from '../../schema/Task'
+import { time } from '../../util/shared'
+import { actions } from 'astro:actions'
+
+let task = taskSchema.parse({
+    id: undefined,
+    title: 'enter title',
+    description: 'enter description',
+    tsExpire: time(),
+    status: 'ACTIVE',
+    priority: 'LOW',
+}) 
+
+if(Astro.params.id !== 'create') {
+    let { data } = await Astro.callAction(actions.task.findById, Number(Astro.params.id))
+    if(!data) {
+        return Astro.redirect('/')
+    }
+    task = taskSchema.parse(data)
+}
+
+---
+<Layout 
+    title="Create task"
+    buttonLabel="Go back"
+    buttonUrl="/"
+>
+    <main>
+        <TaskEdit entity={ task } client:load/>
+    </main>
+</Layout>
+    
