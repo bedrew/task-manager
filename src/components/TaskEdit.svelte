@@ -16,19 +16,20 @@
         date: new Date(Number(entity.tsExpire) * 1000).toISOString().split('T')[0] 
     }
     
-    const getErrorMessage = (result: any) => {
+    const getErrorMessage = (result: {error: boolean, data: { issues?: { message: string, path: string[] }[] }}) => {
         let error = ''
-        if(result.error && result.data && result.data.fields) { 
+        if(result.error && result.data && result.data.issues) { 
             const message: string[] = []
-            for (const key in result.data.fields) {
-                result.data.fields[key].forEach((error: string) => {
-                    message.push(`${capitalize(key)}: ${error}`)
-                })
+            for (const item of result.data.issues) {
+                const fields = item.path.map(item => capitalize(item)).join(',')
+                message.push(
+                    `${fields ? fields + ': ': ''}${item.message}`
+                )
             }
-            error = message.join('\n')
+            error = message.join('; ')
         }
         if(result.error && !error) {
-            error = result.data
+            error = result.data as string
         }
         return error
     }
@@ -43,17 +44,15 @@
         location.href = '/'
     }
 
-    const getResultWithError = <T>(data: T): T => (data as any)
-            .then((r:any) => { 
+    const getResultWithError = (data: any) => { 
+        return data.then((r:any) => { 
                 if(r.error) {
                     return { error: true, data: r.error }
                 }
-                if(r.data && r.data.error) {
-                    return { error: true, data: r.data.error }
-                }
                 return { error: false, data: r.data }
             })
-            .catch((r: any) => ({ error: true, data: r.message }))
+            .catch((r: any) => ({ error: true, data: r.message })) 
+    }
 
     const handleUpdate = async () => {       
         form.tsExpire = new Date(form.date as string).getTime() / 1000
@@ -69,9 +68,9 @@
 
     const handleAutoComplete = async () => {
         error = ''
-        const result: any = await getResultWithError(actions.openAI.autocomplete(form.title))
+        const result: any = await getResultWithError(actions.openAI.autocomplete({ title: form.title }))
         if(result.error) {
-            error = result.data.message
+            error = getErrorMessage(result)
             return
         }
         form.description = result.data.join('\n')
@@ -88,9 +87,7 @@
     <Input value={'title'} form={form} label={'Title'} />
     <TextArea value={'description'} form={form} label={'Description'} />
     <div class="mb-2 mt-2">
-        <Button label={'Generate description'} onclick={()=> {
-           return handleAutoComplete()
-        }}></Button>
+        <Button label={'Generate description'} onclick={handleAutoComplete}></Button>
     </div>
     <div class="sm:flex">
         <div class="sm:mr-4">

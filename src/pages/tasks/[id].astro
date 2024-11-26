@@ -1,5 +1,4 @@
 ---
-
 import TaskEdit from '../../components/TaskEdit.svelte'
 import Layout from '../../layouts/Layout.astro'
 import { taskSchema } from '../../schema/Task'
@@ -30,7 +29,7 @@ if(Astro.params.id !== 'create') {
     buttonUrl="/"
 >
     <main>
-        <TaskEdit entity={ task } client:load/>
+        <TaskEdit entity={ task } client:load />
     </main>
 </Layout>
     

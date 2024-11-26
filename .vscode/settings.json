@@ -4,7 +4,7 @@
       "javascriptreact",
       "astro", // Enable .astro
       "typescript", // Enable .ts
-      "typescriptreact" // Enable .tsx
+      "typescriptreact", // Enable .tsx
     ],
     "editor.quickSuggestions": {
       "strings": true

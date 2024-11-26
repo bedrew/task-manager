@@ -67,7 +67,9 @@ export const server = {
     openAI: {
         autocomplete: defineAction({
             accept: "json",
-            input: z.string().min(5).max(64), 
+            input: z.object({
+                title: z.string().min(5).max(64)
+            }), 
             handler: async (data) => {
                 const openAIConfig = getConfig(OpenAIConfig)
                 return fetch(openAIConfig.url, {
@@ -81,12 +83,16 @@ export const server = {
                         messages: [
                             {
                                 "role": "user",
-                                "content": `${openAIConfig.prompt} ${data}`
+                                "content": `${openAIConfig.prompt} ${data.title}`
                             }
                         ]
                     })
-                }).then(result => result.json())
-                    .then(r=> r.choices.map((i:any) => i.message.content))
+                }).then(result => {
+                    if(result.status !== 200) {
+                        throw new Error(result.statusText)
+                    }
+                    return result.json()
+                }).then(r=> r.choices.map((i:any) => i.message.content))
             },
         })
     }

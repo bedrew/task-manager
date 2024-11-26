@@ -11,7 +11,7 @@
 
 <div class="sticky top-0 z-40 w-full backdrop-blur flex-none lg:z-50 lg:border-b border-slate-800 bg-transparent">
     <div class="mx-auto max-w-7xl">
-        <div class="py-4 border-b border-slate-800 lg:px-8 lg:border-0  mx-4 lg:mx-0">
+        <div class="py-4 border-b border-slate-800 sm:px-4 lg:border-0  mx-4 lg:mx-0">
             <div class="relative flex items-center justify-between">
                 <Button label={buttonLabel} link={buttonUrl} />
                 {#if filter.visible }
