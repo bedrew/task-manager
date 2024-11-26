@@ -8,7 +8,7 @@ Application was developed with Node.js v20.13.1 but 18+ should work fine.
 
 Also as OS was used Ubuntu 24.04 (not tested on any other OS).
 
-To run, first you need a configuration file config.ts, copy it from the template config.ts.example
+To run, first you need a configuration file **config.ts**, copy it from the template **config.ts.example**
 
 ```typescript
 const appConfig: Config = {
@@ -19,6 +19,7 @@ const appConfig: Config = {
     },
 }
 ```
+Also you need to copy **.env.example** to **.env**.
 
 Then run the following command to start application:
 
